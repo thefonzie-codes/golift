@@ -31,13 +31,7 @@ git clone https://github.com/thefonzie-codes/goLift.git
 
 2. Set up PostgreSQL database
 ```bash
-# Create database
-psql -U thefonziecodes -p 5434 -d postgres
-CREATE DATABASE golift;
-\q
-
-# Apply schema
-psql -U thefonziecodes -p 5434 -d golift -f backend/goLift.gg.sql
+Please configure your own Postgres DB. Once there is a live db, it will be connected to the live app, of course.
 ```
 
 3. Configure environment
