@@ -23,6 +23,8 @@ func SetupRoutes(db *sql.DB) http.Handler {
 
 	// Routes
 	r.Get("/health", h.HealthCheck)
+	r.Get("/users", h.GetUsers)
+	r.Get("/users/{id}", h.GetUser)
 
 	// API routes will go here...
 
