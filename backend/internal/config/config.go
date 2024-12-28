@@ -5,25 +5,25 @@ import "os"
 type Config struct {
 	DBHost     string
 	DBPort     string
+	DBName     string
 	DBUser     string
 	DBPassword string
-	DBName     string
 	JWTSecret  string
 }
 
 func New() *Config {
 	return &Config{
-		DBHost:     getEnv("DB_HOST", "localhost"),
-		DBPort:     getEnv("DB_PORT", "5432"),
-		DBUser:     getEnv("DB_USER", "postgres"),
-		DBPassword: getEnv("DB_PASSWORD", ""),
-		DBName:     getEnv("DB_NAME", "golift_dev"),
-		JWTSecret:  getEnv("JWT_SECRET", "your-secret-key"),
+		DBHost:     getEnvOrDefault("DB_HOST", "localhost"),
+		DBPort:     getEnvOrDefault("DB_PORT", "5434"),
+		DBName:     getEnvOrDefault("DB_NAME", "golift_dev"),
+		DBUser:     getEnvOrDefault("DB_USER", "thefonziecodes"),
+		DBPassword: getEnvOrDefault("DB_PASSWORD", "Alfie@3046"),
+		JWTSecret:  getEnvOrDefault("JWT_SECRET", "your_jwt_secret_key"),
 	}
 }
 
-func getEnv(key, defaultValue string) string {
-	if value, exists := os.LookupEnv(key); exists {
+func getEnvOrDefault(key, defaultValue string) string {
+	if value := os.Getenv(key); value != "" {
 		return value
 	}
 	return defaultValue

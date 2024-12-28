@@ -27,8 +27,8 @@ func main() {
 	}
 	defer db.Close()
 
-	// Initialize router
-	router := routes.SetupRoutes(db)
+	// Initialize router with config
+	router := routes.SetupRoutes(db, cfg)
 
 	// Start server
 	port := os.Getenv("PORT")

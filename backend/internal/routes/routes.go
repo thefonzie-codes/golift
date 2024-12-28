@@ -5,28 +5,47 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
+	chimiddleware "github.com/go-chi/chi/v5/middleware"
+	"github.com/thefonzie-codes/goLift/internal/config"
 	"github.com/thefonzie-codes/goLift/internal/handlers"
+	"github.com/thefonzie-codes/goLift/internal/middleware"
 )
 
-func SetupRoutes(db *sql.DB) http.Handler {
+func SetupRoutes(db *sql.DB, cfg *config.Config) http.Handler {
 	r := chi.NewRouter()
 
 	// Middleware
-	r.Use(middleware.Logger)
-	r.Use(middleware.Recoverer)
-	r.Use(middleware.RequestID)
-	r.Use(middleware.RealIP)
+	r.Use(chimiddleware.Logger)
+	r.Use(chimiddleware.Recoverer)
+	r.Use(chimiddleware.RequestID)
+	r.Use(chimiddleware.RealIP)
 
-	// Initialize handlers
-	h := handlers.NewHandler(db)
+	h := handlers.NewHandler(db, cfg)
 
-	// Routes
+	// Public routes
 	r.Get("/health", h.HealthCheck)
-	r.Get("/users", h.GetUsers)
-	r.Get("/users/{id}", h.GetUser)
+	r.Post("/login", h.Login)
+	r.Post("/register", h.Register)
 
-	// API routes will go here...
+	// Protected routes
+	r.Group(func(r chi.Router) {
+		r.Use(middleware.AuthMiddleware(cfg))
+		
+		r.Get("/users", h.GetUsers)
+		r.Get("/users/{id}", h.GetUser)
+
+		// Coach-only routes
+		r.Group(func(r chi.Router) {
+			r.Use(middleware.RequireRole("coach"))
+			// Add coach-specific routes here
+		})
+
+		// Athlete-only routes
+		r.Group(func(r chi.Router) {
+			r.Use(middleware.RequireRole("athlete"))
+			// Add athlete-specific routes here
+		})
+	})
 
 	return r
 }

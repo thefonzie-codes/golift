@@ -9,14 +9,16 @@ import (
 	"github.com/google/uuid"
 
 	"github.com/thefonzie-codes/goLift/internal/models"
+	"github.com/thefonzie-codes/goLift/internal/config"
 )
 
 type Handler struct {
-	db *sql.DB
+	db     *sql.DB
+	config *config.Config
 }
 
-func NewHandler(db *sql.DB) *Handler {
-	return &Handler{db: db}
+func NewHandler(db *sql.DB, cfg *config.Config) *Handler {
+	return &Handler{db: db, config: cfg}
 }
 
 func (h *Handler) HealthCheck(w http.ResponseWriter, r *http.Request) {
